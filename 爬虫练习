@@ -1,0 +1,96 @@
+
+# https://www.zcool.com.cn/p1/discover/first?p=2&ps=20&column=4
+# https://www.zcool.com.cn/p1/discover/first?p=1&ps=20&column=4
+import requests,jsonpath,json
+#名字 图片链接 主题
+sum_list=[]
+
+class Spider(object):
+    def __init__(self):
+        # 这里面的逻辑在类是实例化的时候就会执行 类名()就是实例化 就和函数调用一样
+        self.headers = {
+            'AbCurrentList': '',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            'Referer': 'https://www.zcool.com.cn/',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36',
+            'sec-ch-ua': '"Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'url': 'http://www.guozhivip.com/',
+            'Cookie': 'HWWAFSESID=e68ba9759d7e23a7aa; HWWAFSESTIME=1764423082006; z_ex_group=%7B%7D; _sm=19acfcfa8a52932-0cc13b78992cea-26061b51-1327104-19acfcfa8a64bfc; meitustat={%22wgid%22:%2219acfcfa8a52932-0cc13b78992cea-26061b51-1327104-19acfcfa8a64bfc%22}; Hm_lvt_e6331320ac7de17020046faecd5fa6b8=1764423084; HMACCOUNT=BC1032A5B6BF9C3E; _ga=GA1.1.680035784.1764423085; psid=19acfcfac28458-094fdaeab826c5-26061b51-144000-19acfcfac292e9; sensorsdata2015jssdkchannel=%7B%22prop%22%3A%7B%22_sa_channel_landing_url%22%3A%22%22%7D%7D; sajssdk_2015_cross_new_user=1; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%2219acfcfac31765-08094551f64ecd-26061b51-1327104-19acfcfac321c70%22%2C%22first_id%22%3A%22%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E5%BC%95%E8%8D%90%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC%22%2C%22%24latest_referrer%22%3A%22http%3A%2F%2Fwww.guozhivip.com%2F%22%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTlhY2ZjZmFjMzE3NjUtMDgwOTQ1NTFmNjRlY2QtMjYwNjFiNTEtMTMyNzEwNC0xOWFjZmNmYWMzMjFjNzAifQ%3D%3D%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%22%2C%22value%22%3A%22%22%7D%2C%22%24device_id%22%3A%2219acfcfac31765-08094551f64ecd-26061b51-1327104-19acfcfac321c70%22%7D; MTutmSource=www.guozhivip.com; newMeitustat_wgid=19acfcfa8a52932-0cc13b78992cea-26061b51-1327104-19acfcfa8a64bfc; customer=2; z_law_undefined=false; r_drefresh_count=1; recommend_tip=1; session=eyJjdXJyZW50VXNlciI6bnVsbH0=; session.sig=1VmncKqjATz0GMOcrellG1zEeXo; Hm_lpvt_e6331320ac7de17020046faecd5fa6b8=1764423365; _ga_VBNWX64S8T=GS2.1.s1764423084$o1$g1$t1764423365$j59$l0$h0'
+        }
+
+
+
+
+    # 定义第一次请求的函数
+    def get_main_html(self,page):
+        url = 'https://www.zcool.com.cn/p1/discover/first?p={page}&ps=20&column=4'
+        response = requests.get(url=url, headers=self.headers)
+        # print(response.status_code)
+        json_data=response.json()
+        mzi=jsonpath.jsonpath(json_data,'$..username')
+        # print(mzi)
+        lij=jsonpath.jsonpath(json_data,'$..cover')
+        # print(lij)
+        subject=jsonpath.jsonpath(json_data,'$..title')
+        print(subject)
+        for i in zip(mzi,lij,subject):
+            d={
+                '名字':i[0],
+                '图片链接':i[1],
+                '主题':i[2]
+            }
+            sum_list.append(d)
+
+    # 定义存储数据函数
+    def save_data(self):
+        ...
+
+        with open('站酷.json', 'w', encoding='utf-8')as f:
+            json.dump(sum_dict, f, ensure_ascii=False, indent=4)
+
+    def run(self):
+        # 调度类当中的函数的
+        for page in range(21):
+            self.get_main_html(page)
+        # 执行存储数据函数
+        self.save_data()
+
+# 类的实例化
+sum_dict={
+            '总数据':sum_list
+        }
+s = Spider()
+# 调用类当中的run方法
+s.run()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
